@@ -1,0 +1,40 @@
+name: Validate Site Requirements
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+
+      - name: Checkout validator
+        uses: actions/checkout@v4
+        with:
+          repository: stuiberv/requirements-implementation-differences
+          path: validator
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install validator dependencies
+        run: |
+          pip install openai pydantic
+
+      - name: Run requirements validator
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python validator/src/agent.py \
+            --local-repo . \
+            --context docs/product-scope.md \
+            --requirements requirements/homepage.md \
+            --implementation requirements/index.html requirements/styles.css \
+            --provider openai \
+            --model gpt-5.6-terra
