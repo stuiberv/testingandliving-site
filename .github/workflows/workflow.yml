@@ -35,6 +35,6 @@ jobs:
             --local-repo . \
             --context docs/product-scope.md \
             --requirements requirements/homepage.md \
-            --implementation requirements/index.html requirements/styles.css \
+            --implementation index.html styles.css \
             --provider openai \
             --model gpt-5.6-terra
